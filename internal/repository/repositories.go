@@ -18,6 +18,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/matrixhub-ai/matrixhub/internal/domain/project"
+	"github.com/matrixhub-ai/matrixhub/internal/domain/user"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/config"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/db"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/log"
@@ -28,6 +29,7 @@ import (
 type Repositories struct {
 	DB      *gorm.DB
 	Project project.IProjectRepository
+	User    user.IUserRepository
 }
 
 func NewRepositories(conf *config.Config) *Repositories {
@@ -42,6 +44,7 @@ func NewRepositories(conf *config.Config) *Repositories {
 	}
 
 	repositories.Project = NewProjectDBRepository(repositories.DB)
+	repositories.User = NewUserRepository(repositories.DB)
 
 	return repositories
 }
