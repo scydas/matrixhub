@@ -18,8 +18,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
-	"github.com/jinzhu/configor"
+	"github.com/spf13/viper"
 
 	"github.com/matrixhub-ai/matrixhub/internal/infra/db"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/log"
@@ -35,20 +36,31 @@ type Config struct {
 }
 
 type APIServerConfig struct {
-	Port int `yaml:"port" env:"APISERVER_PORT" validate:"required"`
+	Port int `yaml:"port" validate:"required"`
 }
 
 func Init(configPath, sqlPath string) (*Config, error) {
-	cfg := new(Config)
-	if err := configor.Load(cfg, configPath); err != nil {
-		return nil, fmt.Errorf("failed to load config(%s): %v", configPath, err)
+	v := viper.New()
+	v.SetConfigFile(configPath)
+
+	v.SetEnvPrefix("MATRIXHUB")
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	v.AutomaticEnv()
+
+	if err := v.ReadInConfig(); err != nil {
+		return nil, fmt.Errorf("failed to load config(%s): %w", configPath, err)
 	}
 
-	dsn, ok := os.LookupEnv(db.MATRIXHUB_DSN_ENV)
-	if ok {
-		cfg.Database.DSN = dsn
-	} else {
-		log.Warn("failed to find matrixhub dsn from env")
+	// Allow env overrides (viper will use these when present)
+	_ = v.BindEnv("database.dsn", db.MATRIXHUB_DSN_ENV)
+
+	cfg := new(Config)
+	if err := v.Unmarshal(cfg); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
+	}
+
+	if cfg.Database.DSN == "" {
+		log.Warn("failed to find matrixhub dsn from env or config")
 	}
 
 	if cfg.Database.Migrate {

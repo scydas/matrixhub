@@ -60,5 +60,7 @@ var apiserverCmd = &cobra.Command{
 }
 
 func init() {
+	rootCmd.AddCommand(apiserverCmd)
+
 	apiserverCmd.Flags().StringP(configFlag, "c", "/etc/matrixhub/config.yaml", "matrixhub config file path")
 }
