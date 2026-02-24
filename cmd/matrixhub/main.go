@@ -18,27 +18,25 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/spf13/cobra"
 
 	"github.com/matrixhub-ai/matrixhub/internal/infra/config"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/log"
 )
 
-var Version = "0.1.0"
-
 const configFlag = "config"
 
-func main() {
-	app := cli.NewApp()
-	app.Name = "matrixhub"
-	app.Version = Version
-	app.Usage = "MATRIXBUB"
-	app.Commands = []*cli.Command{
-		runAPIServerCommand,
-	}
+var rootCmd = &cobra.Command{
+	Use:   "matrixhub",
+	Short: "MATRIXHUB",
+	Long: `matrixhub is an open-source, self-hosted AI model registry engineered for large-scale enterprise inference.
 
-	if err := app.Run(os.Args); err != nil {
-		fmt.Fprintf(os.Stderr, "matrixhub: %s", err)
+It serves as a drop-in private replacement for Hugging Face, purpose-built to accelerate vLLM and SGLang workloads.`,
+}
+
+func main() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
 		os.Exit(1)
 	}
 }
