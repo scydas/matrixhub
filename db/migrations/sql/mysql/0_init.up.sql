@@ -18,3 +18,70 @@ CREATE TABLE IF NOT EXISTS `users` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `roles`
+(
+    `id`          int         NOT NULL AUTO_INCREMENT,
+    `name`        varchar(64) NOT NULL,
+    `permissions` text        NOT NULL,
+    `scope`       varchar(64) NOT NULL,
+    `created_at`  timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `projects`
+(
+    `id`           int         NOT NULL AUTO_INCREMENT,
+    `name`         varchar(64) DEFAULT "",
+    `created_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `members_roles_projects` (
+    `id`            int NOT NULL AUTO_INCREMENT,
+    `member_id`   varchar(64) NOT NULL,
+    `member_type`   varchar(64) NOT NULL,
+    `role_id`     varchar(64) NOT NULL,
+    `project_id`     int NOT NULL,
+    `created_at`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    INDEX `project_id_index` (`project_id`),
+    UNIQUE KEY `composite_index` (`member_id`,`member_type`,`role_id`, `project_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `models`
+(
+    `id`           int         NOT NULL AUTO_INCREMENT,
+    `name`         varchar(64) NOT NULL,
+    `project_id`   int NOT NULL,
+    `created_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `datasets`
+(
+    `id`           int         NOT NULL AUTO_INCREMENT,
+    `name`         varchar(64) NOT NULL,
+    `project_id`   int NOT NULL,
+    `created_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `access_tokens`
+(
+    `id`           int         NOT NULL AUTO_INCREMENT,
+    `name`         varchar(64) NOT NULL,
+    `secret`       VARCHAR(128),
+    `user_id`      CHAR(36)     NOT NULL,
+    `created_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`   timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
