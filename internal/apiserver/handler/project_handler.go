@@ -26,15 +26,13 @@ import (
 )
 
 type ProjectHandler struct {
-	ProjectRepo project.IProjectRepository
+	ProjectService project.IProjectService
 }
 
-func NewProjectHandler(repo project.IProjectRepository) *ProjectHandler {
-	handler := &ProjectHandler{
-		ProjectRepo: repo,
+func NewProjectHandler(ps project.IProjectService) *ProjectHandler {
+	return &ProjectHandler{
+		ProjectService: ps,
 	}
-
-	return handler
 }
 
 func (ph *ProjectHandler) RegisterToServer(opt *ServerOptions) {
@@ -50,7 +48,7 @@ func (ph *ProjectHandler) GetProject(ctx context.Context, request *projectv1alph
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	result, err := ph.ProjectRepo.GetProject(ctx, &project.Project{Name: request.Name})
+	result, err := ph.ProjectService.GetProject(ctx, &project.Project{Name: request.Name})
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -67,7 +65,7 @@ func (ph *ProjectHandler) CreateProject(ctx context.Context, request *projectv1a
 	param := &project.Project{
 		Name: request.Name,
 	}
-	err := ph.ProjectRepo.CreateProject(ctx, param)
+	err := ph.ProjectService.CreateProject(ctx, param)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}

@@ -32,6 +32,7 @@ import (
 
 	"github.com/matrixhub-ai/matrixhub/internal/apiserver/handler"
 	"github.com/matrixhub-ai/matrixhub/internal/apiserver/middleware"
+	"github.com/matrixhub-ai/matrixhub/internal/domain/project"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/config"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/log"
 	"github.com/matrixhub-ai/matrixhub/internal/repository"
@@ -60,13 +61,15 @@ func NewAPIServer(config *config.Config) *APIServer {
 
 	repos := repository.NewRepositories(config)
 
+	projectService := project.NewProjectService(repos.Project)
+
 	server := &APIServer{
 		debug:         config.Debug,
 		port:          config.APIServer.Port,
 		migrationPath: config.MigrationPath,
 		repos:         repos,
 		handlers: []handler.IHandler{
-			handler.NewProjectHandler(repos.Project),
+			handler.NewProjectHandler(projectService),
 			handler.NewUserHandler(repos.User),
 		},
 	}
