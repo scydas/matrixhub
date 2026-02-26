@@ -35,7 +35,7 @@ import (
 	"github.com/matrixhub-ai/matrixhub/internal/domain/project"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/config"
 	"github.com/matrixhub-ai/matrixhub/internal/infra/log"
-	"github.com/matrixhub-ai/matrixhub/internal/repository"
+	"github.com/matrixhub-ai/matrixhub/internal/repo"
 )
 
 const maxGrpcMsgSize = 100 * 1024 * 1024
@@ -50,7 +50,7 @@ type APIServer struct {
 	port       int
 
 	migrationPath string
-	repos         *repository.Repositories
+	repos         *repo.Repos
 	handlers      []handler.IHandler
 }
 
@@ -59,7 +59,7 @@ func NewAPIServer(config *config.Config) *APIServer {
 		panic("apiserver config is nil")
 	}
 
-	repos := repository.NewRepositories(config)
+	repos := repo.NewRepos(config)
 
 	projectService := project.NewProjectService(repos.Project)
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package repository
+package repo
 
 import (
 	"gorm.io/gorm"
@@ -26,30 +26,30 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type Repositories struct {
+type Repos struct {
 	DB      *gorm.DB
-	Project project.IProjectRepository
-	User    user.IUserRepository
+	Project project.IProjectRepo
+	User    user.IUserRepo
 }
 
-func NewRepositories(conf *config.Config) *Repositories {
+func NewRepos(conf *config.Config) *Repos {
 	log.Debug("init database")
 	database, err := db.New(conf.Database)
 	if err != nil {
 		log.Fatalw("create database failed", "error", err)
 	}
 
-	repositories := &Repositories{
+	repos := &Repos{
 		DB: database,
 	}
 
-	repositories.Project = NewProjectDBRepository(repositories.DB)
-	repositories.User = NewUserRepository(repositories.DB)
+	repos.Project = NewProjectDBRepo(repos.DB)
+	repos.User = NewUserRepo(repos.DB)
 
-	return repositories
+	return repos
 }
 
-func (r *Repositories) Close() error {
+func (r *Repos) Close() error {
 	dbconn, err := r.DB.DB()
 	if err != nil {
 		return err

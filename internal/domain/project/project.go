@@ -22,7 +22,7 @@ type Project struct {
 	Name string `json:"name"`
 }
 
-type IProjectRepository interface {
+type IProjectRepo interface {
 	GetProject(ctx context.Context, param *Project) (*Project, error)
 	CreateProject(ctx context.Context, param *Project) error
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package repository
+package repo
 
 import (
 	"context"
@@ -23,11 +23,11 @@ import (
 	"github.com/matrixhub-ai/matrixhub/internal/infra/crypto"
 )
 
-type UserRepository struct {
+type UserRepo struct {
 	db *gorm.DB
 }
 
-func (u *UserRepository) CreateUser(ctx context.Context, user user.User) error {
+func (u *UserRepo) CreateUser(ctx context.Context, user user.User) error {
 	password, err := crypto.HashPassword(user.Password)
 	if err != nil {
 		return err
@@ -36,7 +36,7 @@ func (u *UserRepository) CreateUser(ctx context.Context, user user.User) error {
 	return u.db.WithContext(ctx).Create(&user).Error
 }
 
-func (u *UserRepository) GetUser(ctx context.Context, id string) (*user.User, error) {
+func (u *UserRepo) GetUser(ctx context.Context, id string) (*user.User, error) {
 	var user user.User
 	err := u.db.WithContext(ctx).Where("id = ?", id).First(&user).Error
 	if err != nil {
@@ -45,7 +45,7 @@ func (u *UserRepository) GetUser(ctx context.Context, id string) (*user.User, er
 	return &user, nil
 }
 
-func (u *UserRepository) ListUsers(ctx context.Context, page, pageSize int, search string) (us []*user.User, total int64, err error) {
+func (u *UserRepo) ListUsers(ctx context.Context, page, pageSize int, search string) (us []*user.User, total int64, err error) {
 	query := u.db.WithContext(ctx).Limit(pageSize).Offset((page - 1) * pageSize)
 	if search != "" {
 		query = query.Where("name LIKE ?", "%"+search+"%")
@@ -57,12 +57,12 @@ func (u *UserRepository) ListUsers(ctx context.Context, page, pageSize int, sear
 	return
 }
 
-func (u *UserRepository) DeleteUser(ctx context.Context, id string) error {
+func (u *UserRepo) DeleteUser(ctx context.Context, id string) error {
 	return u.db.WithContext(ctx).Where("id = ?", id).Delete(&user.User{}).Error
 }
 
-func NewUserRepository(db *gorm.DB) user.IUserRepository {
-	return &UserRepository{
+func NewUserRepo(db *gorm.DB) user.IUserRepo {
+	return &UserRepo{
 		db: db,
 	}
 }
