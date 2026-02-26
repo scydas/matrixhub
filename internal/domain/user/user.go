@@ -32,7 +32,7 @@ func (User) TableName() string {
 	return "users"
 }
 
-type IUserRepository interface {
+type IUserRepo interface {
 	CreateUser(ctx context.Context, user User) error
 	GetUser(ctx context.Context, id string) (*User, error)
 	ListUsers(ctx context.Context, page, pageSize int, search string) ([]*User, int64, error)

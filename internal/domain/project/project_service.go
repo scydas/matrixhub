@@ -14,15 +14,27 @@
 
 package project
 
-import (
-	"context"
-)
+import "context"
 
-type Project struct {
-	Name string `json:"name"`
-}
-
-type IProjectRepo interface {
+type IProjectService interface {
 	GetProject(ctx context.Context, param *Project) (*Project, error)
 	CreateProject(ctx context.Context, param *Project) error
+}
+
+type ProjectService struct {
+	ProjectRepo IProjectRepo
+}
+
+func NewProjectService(prepo IProjectRepo) IProjectService {
+	return &ProjectService{
+		ProjectRepo: prepo,
+	}
+}
+
+func (ps *ProjectService) GetProject(ctx context.Context, param *Project) (*Project, error) {
+	return ps.ProjectRepo.GetProject(ctx, param)
+}
+
+func (ps *ProjectService) CreateProject(ctx context.Context, param *Project) error {
+	return ps.ProjectRepo.CreateProject(ctx, param)
 }

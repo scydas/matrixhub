@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package repository
+package repo
 
 import (
 	"context"
@@ -22,22 +22,22 @@ import (
 	"github.com/matrixhub-ai/matrixhub/internal/domain/project"
 )
 
-type ProjectDBRepository struct {
+type ProjectDBRepo struct {
 	db *gorm.DB
 }
 
-func NewProjectDBRepository(db *gorm.DB) *ProjectDBRepository {
-	return &ProjectDBRepository{db}
+func NewProjectDBRepo(db *gorm.DB) *ProjectDBRepo {
+	return &ProjectDBRepo{db}
 }
 
-func (r *ProjectDBRepository) GetProject(ctx context.Context, param *project.Project) (*project.Project, error) {
+func (r *ProjectDBRepo) GetProject(ctx context.Context, param *project.Project) (*project.Project, error) {
 	dbWithCtx := r.db.WithContext(ctx)
 	output := &project.Project{}
 	err := dbWithCtx.Where(param).First(output).Error
 	return output, err
 }
 
-func (r *ProjectDBRepository) CreateProject(ctx context.Context, param *project.Project) error {
+func (r *ProjectDBRepo) CreateProject(ctx context.Context, param *project.Project) error {
 	dbWithCtx := r.db.WithContext(ctx)
 	return dbWithCtx.Create(param).Error
 }

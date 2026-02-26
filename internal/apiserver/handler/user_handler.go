@@ -27,7 +27,7 @@ import (
 )
 
 type UserHandler struct {
-	userRepo user.IUserRepository
+	userRepo user.IUserRepo
 }
 
 func (u *UserHandler) CreateUser(ctx context.Context, request *userv1alpha1.CreateUserRequest) (*userv1alpha1.CreateUserResponse, error) {
@@ -107,7 +107,7 @@ func (u *UserHandler) RegisterToServer(options *ServerOptions) {
 	}
 }
 
-func NewUserHandler(repo user.IUserRepository) IHandler {
+func NewUserHandler(repo user.IUserRepo) IHandler {
 	handler := &UserHandler{
 		userRepo: repo,
 	}
