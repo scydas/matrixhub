@@ -1,6 +1,6 @@
 # config for local dev env
 debug: true
-migrationPath: ./../../db/migrations
+migrationPath: /etc/matrixhub/migrations
 log:
   level: debug
 
