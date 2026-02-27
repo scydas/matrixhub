@@ -33,7 +33,7 @@ ARG TARGETARCH
 ARG LD_FLAGS
 ENV LD_FLAGS=${LD_FLAGS}
 RUN --mount=type=cache,target=/go/pkg/mod \
-    CGO_ENABLED=1 GOOS=linux GOARCH=$TARGETARCH \
+    GOOS=linux GOARCH=$TARGETARCH \
     go build -ldflags="${LD_FLAGS}" -o /matrixhub ./cmd/matrixhub
 
 ##########################################
